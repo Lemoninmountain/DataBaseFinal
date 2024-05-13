@@ -9,14 +9,14 @@
     warehouses, as well as viewing existing records.
 
 *Features
-    Supplier Management
-        Add Supplier: Enter details such as supplier name, contact person,
-            and contact email to add a new supplier record to the system.
-        Update Supplier: Modify the details of an existing supplier record 
-            by updating fields such as supplier name, contact person, and 
-        contact email.
-        Delete Supplier: Remove a supplier record from the system, along
-            with all associated information.
+    Supplier Management\\
+        Add Supplier: Enter details such as supplier name, contact person,\\
+            and contact email to add a new supplier record to the system.\\
+        Update Supplier: Modify the details of an existing supplier record \\
+            by updating fields such as supplier name, contact person, and \\
+        contact email.\\
+        Delete Supplier: Remove a supplier record from the system, along\\
+            with all associated information.\\
     Supply Order Management
         Add Supply Order: Input supplier ID, product ID, order date, and 
             quantity to create a new supply order record in the system.
