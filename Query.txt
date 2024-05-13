@@ -1,0 +1,185 @@
+CREATE SCHEMA `factory_gary` ;
+
+use factory_gary;
+
+CREATE TABLE customer_gary (
+customer_id INT PRIMARY KEY AUTO_INCREMENT,
+customer_name VARCHAR(100) NOT NULL,
+contact_email VARCHAR(100) UNIQUE NOT NULL,
+contact_person VARCHAR(200)
+);
+
+CREATE TABLE Warehouse_gary (
+warehouse_id INT PRIMARY KEY AUTO_INCREMENT,
+warehouse_location VARCHAR(200)
+);
+
+CREATE TABLE product_gary (
+product_id INT PRIMARY KEY AUTO_INCREMENT,
+product_name VARCHAR(100) NOT NULL,
+category VARCHAR(100) NOT NULL,
+material VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE supplier_gary (
+supplier_id INT PRIMARY KEY AUTO_INCREMENT,
+supplier_name VARCHAR(100) NOT NULL,
+contact_person VARCHAR(100),
+contact_email VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE sales_order_gary (
+sales_order_id INT PRIMARY KEY AUTO_INCREMENT,
+customer_id INT NOT NULL,
+product_id INT NOT NULL,
+quantity INT NOT NULL,
+order_date DATE NOT NULL,
+FOREIGN KEY (customer_id) REFERENCES customer_gary(customer_id),
+FOREIGN KEY (product_id) REFERENCES product_gary(product_id)
+);
+
+CREATE TABLE supply_order_gary (
+supply_order_id INT PRIMARY KEY AUTO_INCREMENT,
+supplier_id INT NOT NULL,
+product_id INT NOT NULL,
+order_date DATE NOT NULL,
+quantity INT NOT NULL,
+FOREIGN KEY (supplier_id) REFERENCES supplier_gary(supplier_id),
+FOREIGN KEY (product_id) REFERENCES product_gary(product_id)
+);
+
+CREATE TABLE stock_gary (
+stock_id INT PRIMARY KEY AUTO_INCREMENT,
+product_id INT NOT NULL,
+warehouse_id INT NOT NULL,
+quantity INT NOT NULL,
+FOREIGN KEY (product_id) REFERENCES product_gary(product_id),
+FOREIGN KEY (warehouse_id) REFERENCES warehouse_gary(warehouse_id)
+);
+
+CREATE TABLE Manufacture_Plant_gary (
+manufacture_plant_id INT PRIMARY KEY AUTO_INCREMENT,
+manufacture_name VARCHAR(100) NOT NULL,
+manufacture_location VARCHAR(200)
+);
+
+CREATE TABLE production_Line_gary (
+production_line_id INT PRIMARY KEY AUTO_INCREMENT,
+manufacture_plant_id INT NOT NULL,
+production_line_name VARCHAR(100) NOT NULL,
+FOREIGN KEY (manufacture_plant_id) REFERENCES
+manufacture_plant_gary(manufacture_plant_id)
+);
+
+CREATE TABLE Employee_gary (
+employee_id INT PRIMARY KEY AUTO_INCREMENT,
+name VARCHAR(100) NOT NULL,
+position VARCHAR(50),
+manufacture_plant_id INT NOT NULL,
+FOREIGN KEY (manufacture_plant_id) REFERENCES
+Manufacture_Plant_gary(manufacture_plant_id)
+);
+
+CREATE TABLE payroll_gary(
+payroll_id INT PRIMARY KEY AUTO_INCREMENT,
+employee_id INT NOT NULL,
+salary DECIMAL(10, 2) NOT NULL,
+bonus DECIMAL(10, 2) NOT NULL,
+pay_date DATE NOT NULL,
+FOREIGN KEY (employee_id) REFERENCES employee_gary(employee_id)
+);
+
+CREATE TABLE family_gary(
+family_id INT PRIMARY KEY AUTO_INCREMENT,
+employee_id INT NOT NULL,
+family_phone VARCHAR(100),
+family_position VARCHAR(200),
+FOREIGN KEY (employee_id) REFERENCES employee_gary(employee_id)
+);
+
+CREATE TABLE production_order_gary(
+production_order_id INT PRIMARY KEY AUTO_INCREMENT,
+production_line_id INT NOT NULL,
+product_id INT NOT NULL,
+order_date DATE NOT NULL,
+FOREIGN KEY (production_line_id) REFERENCES
+production_line_gary(production_line_id),
+FOREIGN KEY (product_id) REFERENCES product_gary(product_id)
+);
+
+
+DELIMITER //
+
+CREATE TRIGGER update_total_salary AFTER INSERT ON payroll_gary
+FOR EACH ROW
+BEGIN
+    DECLARE total_salary DECIMAL(10, 2);
+    SELECT SUM(salary + bonus) INTO total_salary FROM payroll_gary WHERE employee_id = NEW.employee_id;
+    UPDATE employee_gary SET total_salary = total_salary WHERE employee_id = NEW.employee_id;
+END;
+//
+
+DELIMITER ;
+-- Automatically updates an employee's total salary.
+
+DELIMITER //
+
+CREATE PROCEDURE get_payroll_info()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE emp_id INT;
+    DECLARE emp_salary DECIMAL(10, 2);
+
+    DECLARE payroll_cursor CURSOR FOR SELECT employee_id, salary FROM payroll_gary;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN payroll_cursor;
+
+    read_loop: LOOP
+        FETCH payroll_cursor INTO emp_id, emp_salary;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        SELECT emp_id, emp_salary;
+    END LOOP;
+
+    CLOSE payroll_cursor;
+END;
+//
+DELIMITER ;
+--  Retrieves the data in the payroll_gary table and outputs them to a result set.
+
+DELIMITER //
+
+CREATE PROCEDURE calculate_total_salary()
+BEGIN
+    DECLARE total DECIMAL(10, 2);
+    SELECT SUM(salary + bonus) INTO total FROM payroll_gary;
+    SELECT total;
+END;
+//
+
+DELIMITER ;
+-- Create a process to calculate total pay for all employees.
+
+CREATE VIEW payroll_view AS
+SELECT e.name, p.salary, p.bonus, p.pay_date
+FROM payroll_gary p
+JOIN employee_gary e ON p.employee_id = e.employee_id;
+-- Create a view to display salary information for each employee.
+
+CREATE INDEX idx_employee_id ON payroll_gary (employee_id);
+-- To improve query efficiency, we can create an index on the employee_id field of the payroll_gary table.
+
+DELIMITER //
+CREATE EVENT remind_check_orders_event
+ON SCHEDULE EVERY 1 WEEK
+STARTS CURRENT_TIMESTAMP
+ON COMPLETION PRESERVE
+DO
+BEGIN
+    INSERT INTO notification_gary (message) VALUES ('Remember to check production orders for the week.');
+END;
+//
+DELIMITER ;
+-- Used every Monday at 9am to remind to check production orders.

@@ -1,0 +1,107 @@
+INSERT INTO customer_gary (customer_name, contact_email, contact_person)
+VALUES
+('A', 'customerA@example.com', 'Person A'),
+('B', 'customerB@example.com', 'Person B'),
+('C', 'customerC@example.com', 'Person C'),
+('D', 'customerD@example.com', 'Person D'),
+('E', 'customerE@example.com', 'Person E');
+
+INSERT INTO warehouse_gary (warehouse_location)
+VALUES
+('Location A'),
+('Location B'),
+('Location C'),
+('Location D'),
+('Location E');
+
+INSERT INTO product_gary (product_name, category, material)
+VALUES
+('Product A', 'Category 1', 'Material A'),
+('Product B', 'Category 2', 'Material B'),
+('Product C', 'Category 1', 'Material C'),
+('Product D', 'Category 3', 'Material D'),
+('Product E', 'Category 2', 'Material E');
+
+INSERT INTO supplier_gary (supplier_name, contact_person, contact_email)
+VALUES
+('Supplier A', 'Contact A', 'sA@example.com'),
+('Supplier B', 'Contact B', 'sB@example.com'),
+('Supplier C', 'Contact C', 'sC@example.com'),
+('Supplier D', 'Contact D', 'sD@example.com'),
+('Supplier E', 'Contact E', 'sE@example.com');
+
+INSERT INTO sales_order_gary (customer_id, product_id, quantity,
+order_date)
+VALUES
+(1, 1, 10, '2024-04-14'),
+(2, 2, 20, '2024-04-15'),
+(3, 3, 15, '2024-04-16'),
+(4, 4, 5, '2024-04-17'),
+(5, 5, 8, '2024-04-18');
+
+INSERT INTO supply_order_gary (supplier_id, product_id, order_date,
+quantity)
+VALUES
+(1, 1, '2024-04-14', 30),
+(2, 2, '2024-04-15', 50),
+(3, 3, '2024-04-16', 40),
+(4, 4, '2024-04-17', 25),
+(5, 5, '2024-04-18', 35);
+
+INSERT INTO stock_gary (product_id, warehouse_id, quantity)
+VALUES
+(1, 1, 100),
+(2, 2, 80),
+(3, 3, 90),
+(4, 4, 60),
+(5, 5, 75);
+
+INSERT INTO manufacture_plant_gary (manufacture_name, manufacture_location)
+VALUES
+('Plant A', 'shanghai'),
+('Plant B', 'beijing'),
+('Plant C', 'shenzhen'),
+('Plant D', 'chongqing'),
+('Plant E', 'wenzhou');
+
+INSERT INTO production_line_gary (manufacture_plant_id,
+production_line_name)
+VALUES
+(1, 'Line A'),
+(2, 'Line B'),
+(3, 'Line C'),
+(4, 'Line D'),
+(5, 'Line E');
+
+INSERT INTO employee_gary (name, position, manufacture_plant_id)
+VALUES
+('Employee A', 'Manager', 1),
+('Employee B', 'Engineer', 2),
+('Employee C', 'Technician', 3),
+('Employee D', 'Supervisor', 4),
+('Employee E', 'Operator', 5);
+
+INSERT INTO payroll_gary (employee_id, salary, bonus, pay_date)
+VALUES
+(1, 5000.00, 500.00, '2024-04-14'),
+(2, 4000.00, 400.00, '2024-04-15'),
+(3, 3500.00, 300.00, '2024-04-16'),
+(4, 3000.00, 200.00, '2024-04-17'),
+(5, 2800.00, 150.00, '2024-04-18');
+
+INSERT INTO family_gary (employee_id, family_phone, family_position)
+VALUES
+(1, '123-456-7890', 'Spouse'),
+(2, '123-456-7891', 'Spouse'),
+(3, '123-456-7892', 'Parent'),
+(4, '123-456-7893', 'Child'),
+(5, '123-456-7894', 'Sibling');
+
+INSERT INTO production_order_gary (production_line_id, product_id,
+order_date)
+VALUES
+(1, 1, '2024-04-14'),
+(2, 2, '2024-04-15'),
+(3, 3, '2024-04-16'),
+(4, 4, '2024-04-17'),
+(5, 5, '2024-04-18');
